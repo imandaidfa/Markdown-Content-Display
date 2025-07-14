@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Content Display</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better content flow */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            margin-top: 20px; /* Add some margin from the top */
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            font-weight: bold;
+        }
+        p {
+            margin-bottom: 1em;
+            line-height: 1.6;
+        }
+        pre {
+            background-color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 1em;
+        }
+        code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            background-color: #e2e8f0;
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+        }
+        pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        blockquote {
+            border-left: 4px solid #a0aec0;
+            padding-left: 15px;
+            color: #4a5568;
+            font-style: italic;
+            margin-bottom: 1em;
+        }
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 1em;
+        }
+        li {
+            margin-bottom: 0.5em;
+        }
+        a {
+            color: #3182ce;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1em;
+        }
+        th, td {
+            border: 1px solid #cbd5e0;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #edf2f7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Konten dari File Markdown</h1>
+        <div id="markdown-content" class="prose max-w-none">
+            <!-- Konten Markdown akan dimuat di sini -->
+            <p class="text-center text-gray-500">Memuat konten...</p>
+        </div>
+        <div id="error-message" class="hidden mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md" role="alert">
+            <p class="font-bold">Terjadi kesalahan!</p>
+            <p>Gagal memuat file Markdown. Pastikan URL benar dan dapat diakses.</p>
+        </div>
+    </div>
+
+    <!-- Pustaka marked.js untuk mengonversi Markdown ke HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const markdownContentDiv = document.getElementById('markdown-content');
+            const errorMessageDiv = document.getElementById('error-message');
+            // Mengubah path file Markdown ke URL yang disediakan
+            const markdownFilePath = 'https://raw.githubusercontent.com/imandaidfa/Framer-About/refs/heads/main/about-history.md';
+
+            try {
+                // Mengambil file Markdown dari URL
+                const response = await fetch(markdownFilePath);
+
+                // Memeriksa apakah respons berhasil (status 200 OK)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Membaca teks dari file
+                const markdownText = await response.text();
+
+                // Mengonversi Markdown ke HTML menggunakan marked.js
+                const htmlContent = marked.parse(markdownText);
+
+                // Menampilkan HTML di halaman web
+                markdownContentDiv.innerHTML = htmlContent;
+                errorMessageDiv.classList.add('hidden'); // Sembunyikan pesan error jika berhasil
+            } catch (error) {
+                console.error('Error fetching or parsing Markdown:', error);
+                markdownContentDiv.innerHTML = ''; // Kosongkan konten
+                errorMessageDiv.classList.remove('hidden'); // Tampilkan pesan error
+            }
+        });
+    </script>
+</body>
+</html>
